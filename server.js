@@ -19,6 +19,7 @@ app.use("/scripts/gsap", express.static(path.join(__dirname, "node_modules/gsap"
 
 // View Engine
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Contact Route with Nodemailer
 const nodemailer = require('nodemailer');
@@ -77,8 +78,12 @@ app.post("/contact", async (req, res) => {
 app.use("/", require("./routes/pages"));
 
 // Server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`View here: http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`View here: http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
