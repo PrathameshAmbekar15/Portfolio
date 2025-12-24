@@ -1,3 +1,8 @@
+import { gsap } from '/scripts/gsap/index.js';
+import { ScrollTrigger } from '/scripts/gsap/ScrollTrigger.js';
+
+gsap.registerPlugin(ScrollTrigger);
+
 document.addEventListener('DOMContentLoaded', () => {
     // Current year in footer
     const yearEl = document.querySelector('.year');
@@ -41,17 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Start typing
-    typeRoles();
+    if (roleElement) typeRoles();
 
     // About Section Animation (Intersection Observer)
     const aboutSection = document.querySelector('#about');
-    const aboutContent = document.querySelector('#about p'); // Select paragraphs
+    const aboutParagraphs = document.querySelectorAll('#about p');
 
-    if (aboutSection) {
+    if (aboutSection && aboutParagraphs.length > 0) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    gsap.fromTo("#about p", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2 });
+                    gsap.fromTo(aboutParagraphs, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2 });
                     observer.unobserve(entry.target);
                 }
             });
@@ -64,44 +69,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const skillCards = document.querySelectorAll('.skill-card');
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active class from all
-            filterBtns.forEach(b => b.classList.remove('active'));
-            // Add active to clicked
-            btn.classList.add('active');
+    if (filterBtns.length > 0 && skillCards.length > 0) {
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active to clicked
+                btn.classList.add('active');
 
-            const filterValue = btn.getAttribute('data-filter');
+                const filterValue = btn.getAttribute('data-filter');
 
-            skillCards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                const skillName = card.querySelector('.skill-name').textContent.trim();
-                let shouldShow = false;
+                skillCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    const skillNameEl = card.querySelector('.skill-name');
+                    const skillName = skillNameEl ? skillNameEl.textContent.trim() : '';
+                    let shouldShow = false;
 
-                if (filterValue === 'all') {
-                    shouldShow = true;
-                } else if (filterValue === 'language') {
-                    // Strict filtering for Programming Languages
-                    if (['Python', 'Java', 'JavaScript'].includes(skillName)) {
+                    if (filterValue === 'all') {
+                        shouldShow = true;
+                    } else if (filterValue === 'language') {
+                        // Strict filtering for Programming Languages
+                        if (['Python', 'Java', 'JavaScript'].includes(skillName)) {
+                            shouldShow = true;
+                        }
+                    } else if (category === filterValue) {
                         shouldShow = true;
                     }
-                } else if (category === filterValue) {
-                    shouldShow = true;
-                }
 
-                if (shouldShow) {
-                    card.style.display = 'flex';
-                    gsap.to(card, { opacity: 1, scale: 1, duration: 0.3, display: 'flex', overwrite: true });
-                } else {
-                    gsap.to(card, {
-                        opacity: 0, scale: 0.5, duration: 0.3, onComplete: () => {
-                            card.style.display = 'none';
-                        }, overwrite: true
-                    });
-                }
+                    if (shouldShow) {
+                        card.style.display = 'flex';
+                        gsap.to(card, { opacity: 1, scale: 1, duration: 0.3, display: 'flex', overwrite: true });
+                    } else {
+                        gsap.to(card, {
+                            opacity: 0, scale: 0.5, duration: 0.3, onComplete: () => {
+                                card.style.display = 'none';
+                            }, overwrite: true
+                        });
+                    }
+                });
             });
         });
-    });
+    }
 
     // Profile Image & About Image Animations
     const profileImg = document.querySelector('.profile-img');
@@ -141,13 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Active Navigation Link Highlighting
     const currentPath = window.location.pathname;
     const navLinks = document.querySelectorAll('nav a');
-    const sections = document.querySelectorAll("section");
 
-    navLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('active');
-            link.style.color = '#fff';
-            link.style.fontWeight = 'bold';
-        }
-    });
+    if (navLinks.length > 0) {
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+                link.style.color = '#fff';
+                link.style.fontWeight = 'bold';
+            }
+        });
+    }
 });

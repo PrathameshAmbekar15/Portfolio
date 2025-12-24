@@ -13,8 +13,7 @@ app.use(express.static("public"));
 // Serve Frontend Libraries
 const path = require("path");
 app.use("/scripts/three", express.static(path.join(__dirname, "node_modules/three/build")));
-app.use("/scripts/gsap", express.static(path.join(__dirname, "node_modules/gsap/dist")));
-app.use("/scripts/gsap/ScrollTrigger.js", express.static(path.join(__dirname, "node_modules/gsap/dist/ScrollTrigger.js")));
+app.use("/scripts/gsap", express.static(path.join(__dirname, "node_modules/gsap")));
 
 
 

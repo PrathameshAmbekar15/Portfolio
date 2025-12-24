@@ -1,47 +1,56 @@
-import { gsap } from '/scripts/gsap/gsap.js';
+import { gsap } from '/scripts/gsap/index.js';
 import { ScrollTrigger } from '/scripts/gsap/ScrollTrigger.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 document.addEventListener('DOMContentLoaded', () => {
     // Header Animation
-    gsap.from("header", {
-        duration: 1,
-        y: -100,
-        opacity: 0,
-        ease: "power3.out"
-    });
+    const header = document.querySelector("header");
+    if (header) {
+        gsap.from(header, {
+            duration: 1,
+            y: -100,
+            opacity: 0,
+            ease: "power3.out"
+        });
+    }
 
     // Content Fade In with Parallax feel
-    gsap.from(".glass-card", {
-        scrollTrigger: {
-            trigger: "#home",
-            start: "top center"
-        },
-        duration: 1,
-        y: 50,
-        opacity: 0,
-        stagger: 0.2,
-        ease: "power2.out"
-    });
-
-    // Timeline Animation
-    gsap.utils.toArray('.experience-card').forEach((card, i) => {
-        gsap.from(card, {
+    const fadeTargets = document.querySelectorAll(".glass-card, .project-card, .skill-card, .timeline-item");
+    if (fadeTargets.length > 0) {
+        gsap.from(fadeTargets, {
             scrollTrigger: {
-                trigger: card,
-                start: "top 80%",
+                trigger: "#home", // Default trigger
+                start: "top center",
+                toggleActions: "play none none none"
             },
-            duration: 0.8,
-            x: -50,
+            duration: 1,
+            y: 50,
             opacity: 0,
-            ease: "back.out(1.7)"
+            stagger: 0.1,
+            ease: "power2.out"
         });
-    });
+    }
+
+    // Timeline Animation (Individual cards)
+    const timelineItems = gsap.utils.toArray('.experience-card, .timeline-item');
+    if (timelineItems.length > 0) {
+        timelineItems.forEach((card) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                },
+                duration: 0.8,
+                x: -50,
+                opacity: 0,
+                ease: "back.out(1.7)"
+            });
+        });
+    }
 
     // Card Hover Effects (Tilt - lightweight)
-    const cards = document.querySelectorAll('.glass-card');
-
+    const cards = document.querySelectorAll('.glass-card, .project-card, .skill-card');
     cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
@@ -74,9 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Navbar 3D Tilt
     const nav = document.querySelector('nav');
-    document.addEventListener('mousemove', (e) => {
-        const x = (window.innerWidth / 2 - e.pageX) / 50;
-        const y = (window.innerHeight / 2 - e.pageY) / 50;
-        nav.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-    });
+    if (nav) {
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            nav.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        });
+    }
 });
