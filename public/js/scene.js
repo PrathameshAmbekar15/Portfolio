@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.182.0/+esm';
+import * as THREE from '/lib/three.module.js';
 
 const initScene = () => {
     const container = document.getElementById('canvas-container');
