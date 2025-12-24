@@ -11,10 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Serve Frontend Libraries
-app.use("/scripts/three", express.static(path.join(__dirname, "node_modules/three/build")));
-app.use("/scripts/gsap", express.static(path.join(__dirname, "node_modules/gsap")));
-
+// Serve Frontend Libraries (Handled via CDN in production)
 
 
 // View Engine
