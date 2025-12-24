@@ -3,15 +3,15 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const path = require("path");
 const app = express();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Serve Frontend Libraries
-const path = require("path");
 app.use("/scripts/three", express.static(path.join(__dirname, "node_modules/three/build")));
 app.use("/scripts/gsap", express.static(path.join(__dirname, "node_modules/gsap")));
 
