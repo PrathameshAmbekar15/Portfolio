@@ -1,5 +1,5 @@
-import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm';
-import { ScrollTrigger } from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger/+esm';
+import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.14.2/+esm';
+import { ScrollTrigger } from 'https://cdn.jsdelivr.net/npm/gsap@3.14.2/ScrollTrigger/+esm';
 
 gsap.registerPlugin(ScrollTrigger);
 
