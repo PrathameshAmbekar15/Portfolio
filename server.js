@@ -38,22 +38,17 @@ app.post("/contact", async (req, res) => {
     }
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // Use SSL
+      service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-      },
-      tls: {
-        rejectUnauthorized: false
       }
     });
 
     // Mail Options
     const mailOptions = {
-      from: process.env.EMAIL_USER, // Using authorized email to prevent spoofing flags
-      replyTo: email, // The user's email goes here so you can reply to them
+      from: process.env.EMAIL_USER, // Authorised email
+      replyTo: email, // User's email for replies
       to: process.env.EMAIL_USER,
       subject: `Portfolio Contact from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
