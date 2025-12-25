@@ -29,61 +29,51 @@ app.post("/contact", async (req, res) => {
     return res.render("contact", { error: "Please fill all fields" });
   }
 
+  // Send Email using Resend API (HTTP based, bypasses Render SMTP blocks)
   try {
-    // Create Transporter (Configure with your credentials in .env)
-    // NOTE: For Gmail, you likely need an App Password if 2FA is on.
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn("Missing email credentials in .env. Skipping email sending.");
-      return res.render("contact", { error: "Server missing 'EMAIL_USER' or 'EMAIL_PASS' in .env file." });
+    if (!process.env.RESEND_API_KEY) {
+      console.error("Missing RESEND_API_KEY");
+      const msg = "Server missing 'RESEND_API_KEY'. Please add it to Render environment variables.";
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(500).json({ error: msg });
+      }
+      return res.render("contact", { error: msg });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // Use STARTTLS
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
       },
-      debug: true, // Show debug output
-      logger: true // Log information to console
+      body: JSON.stringify({
+        from: 'onboarding@resend.dev', // Default sender for free accounts
+        to: process.env.EMAIL_USER || 'your-email@example.com', // Your verified email
+        reply_to: email,
+        subject: `Portfolio Contact from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+        html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong></p><p>${message}</p>`
+      })
     });
 
-    // Mail Options
-    const mailOptions = {
-      from: process.env.EMAIL_USER, // Authorised email
-      replyTo: email, // User's email for replies
-      to: process.env.EMAIL_USER,
-      subject: `Portfolio Contact from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
-    };
+    const result = await response.json();
 
-    // Send Email
-    try {
-      await transporter.sendMail(mailOptions);
+    if (response.ok) {
       if (req.headers.accept && req.headers.accept.includes('application/json')) {
         return res.json({ success: "Message Sent Successfully!" });
       }
       res.render("contact", { success: "Message Sent Successfully!" });
-    } catch (error) {
-      console.error("FULL EMAIL ERROR OBJECT:", JSON.stringify(error, null, 2));
-      console.error("EMAIL ERROR MESSAGE:", error.message);
-      console.error("EMAIL ERROR CODE:", error.code);
-
-      let errorMessage = `Error sending email: ${error.message}`;
-
-      if (error.code === 'EAUTH') {
-        errorMessage = "Authentication failed. Please DOUBLE-CHECK your EMAIL_USER and EMAIL_PASS (App Password) on Render.";
-      }
-
-      if (req.headers.accept && req.headers.accept.includes('application/json')) {
-        return res.status(500).json({ error: errorMessage });
-      }
-      res.render("contact", { error: errorMessage });
+    } else {
+      throw new Error(result.message || 'Resend API Error');
     }
   } catch (error) {
-    console.error("General Email Error:", error);
-    res.render("contact", { error: "Server error: " + error.message });
+    console.error("RESEND API ERROR:", error);
+    let errorMessage = `Error: ${error.message}`;
+
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ error: errorMessage });
+    }
+    res.render("contact", { error: errorMessage });
   }
 });
 
