@@ -2,29 +2,48 @@
 
     <h2>Projects</h2>
 
-    <div class="projects-container">
-
-        <div class="glass-card project-card">
-            <h3>Real-Time Chat Application</h3>
-            <p class="project-meta" style="color: var(--primary-color);"><strong>Tech Stack:</strong> React.js,
-                Firebase, Cloudinary</p>
-            <ul>
-                <li>Developed a real-time messaging application with authentication and searchable chats.</li>
-                <li>Implemented seen/unseen message indicators to improve user experience.</li>
-                <li>Integrated Cloudinary for profile image uploads.</li>
-            </ul>
+    <div class="projects-wrapper" style="padding: 2rem 0;">
+        <!-- Project 1 -->
+        <div class="project-card">
+            <div class="project-info">
+                <div class="project-title">
+                    Real-Time Chat Application
+                </div>
+                <p class="project-desc">
+                    Developed a real-time messaging application with authentication and searchable chats.
+                </p>
+                <div class="tech-stack">
+                    <span class="tech-pill">React.js</span>
+                    <span class="tech-pill">Firebase</span>
+                    <span class="tech-pill">Cloudinary</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/PrathameshAmbekar15/chatapp" class="btn-project"
+                        target="_blank">Code</a>
+                </div>
+            </div>
         </div>
 
-        <div class="glass-card project-card">
-            <h3>Notes Management System</h3>
-            <p class="project-meta" style="color: var(--primary-color);"><strong>Tech Stack:</strong> HTML, CSS,
-                JavaScript, MySQL, PHP</p>
-            <ul>
-                <li>Built a responsive notes management web application with CRUD functionality.</li>
-                <li>Implemented secure backend logic using PHP and MySQL.</li>
-            </ul>
+        <!-- Project 2 -->
+        <div class="project-card">
+            <div class="project-info">
+                <div class="project-title">
+                    Notes Management System
+                </div>
+                <p class="project-desc">
+                    Built a responsive notes management web application with CRUD functionality using PHP/MySQL.
+                </p>
+                <div class="tech-stack">
+                    <span class="tech-pill">PHP</span>
+                    <span class="tech-pill">MySQL</span>
+                    <span class="tech-pill">JS</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/PrathameshAmbekar15/Notes_Management_System" class="btn-project"
+                        target="_blank">Code</a>
+                </div>
+            </div>
         </div>
-
     </div>
 
     <%- include("partials/footer") %>

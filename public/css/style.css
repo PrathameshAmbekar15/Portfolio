@@ -64,9 +64,7 @@ nav {
     border-radius: 50px;
     /* Pill shape */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform-style: preserve-3d;
-    transition: transform 0.1s;
-    perspective: 1000px;
+    transition: transform 0.3s ease;
 }
 
 .logo {
@@ -313,6 +311,13 @@ footer {
     gap: 1.5rem;
 }
 
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
 /* Gradient Text Animation */
 .animate-text {
     background: linear-gradient(to right, #fff, #a0a0a0, #fff);
@@ -461,6 +466,26 @@ footer {
     height: 10px;
     background: var(--accent-orange);
     border-radius: 50%;
+}
+
+.experience-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.experience-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.experience-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-orange);
 }
 
 /* Contact */

@@ -18,28 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Content Fade In with Parallax feel
     const fadeTargets = document.querySelectorAll(".glass-card, .project-card, .skill-card, .timeline-item");
     if (fadeTargets.length > 0) {
-        gsap.from(fadeTargets, {
-            scrollTrigger: {
-                trigger: "#home", // Default trigger
-                start: "top center",
-                toggleActions: "play none none none"
-            },
-            duration: 1,
-            y: 50,
-            opacity: 0,
-            stagger: 0.1,
-            ease: "power2.out"
+        fadeTargets.forEach((target) => {
+            gsap.from(target, {
+                scrollTrigger: {
+                    trigger: target,
+                    start: "top 90%",
+                    toggleActions: "play none none none"
+                },
+                duration: 1,
+                y: 30,
+                opacity: 0,
+                ease: "power2.out"
+            });
         });
     }
 
     // Timeline Animation (Individual cards)
-    const timelineItems = gsap.utils.toArray('.experience-card, .timeline-item');
+    const timelineItems = gsap.utils.toArray('.experience-card');
     if (timelineItems.length > 0) {
         timelineItems.forEach((card) => {
             gsap.from(card, {
                 scrollTrigger: {
                     trigger: card,
-                    start: "top 80%",
+                    start: "top 85%",
                 },
                 duration: 0.8,
                 x: -50,
@@ -80,14 +81,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
-
-    // Navbar 3D Tilt
-    const nav = document.querySelector('nav');
-    if (nav) {
-        document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 50;
-            const y = (window.innerHeight / 2 - e.pageY) / 50;
-            nav.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-        });
-    }
 });
