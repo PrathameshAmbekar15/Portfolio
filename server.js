@@ -38,16 +38,22 @@ app.post("/contact", async (req, res) => {
     }
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // Use SSL
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     });
 
     // Mail Options
     const mailOptions = {
-      from: email,
+      from: process.env.EMAIL_USER, // Using authorized email to prevent spoofing flags
+      replyTo: email, // The user's email goes here so you can reply to them
       to: process.env.EMAIL_USER,
       subject: `Portfolio Contact from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
@@ -56,17 +62,23 @@ app.post("/contact", async (req, res) => {
     // Send Email
     try {
       await transporter.sendMail(mailOptions);
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.json({ success: "Message Sent Successfully!" });
+      }
       res.render("contact", { success: "Message Sent Successfully!" });
     } catch (error) {
       console.error("Email Error:", error);
       let errorMessage = "Error sending email. Please try again later.";
-      
+
       if (error.code === 'EAUTH') {
-        errorMessage = "Authentication failed. Please ensure your EMAIL_USER and EMAIL_PASS (App Password) are correctly configured.";
+        errorMessage = "Authentication failed. Please DOUBLE-CHECK your EMAIL_USER and EMAIL_PASS (App Password) on Render.";
       } else if (error.message.includes("response:")) {
         errorMessage = error.message.substring(error.message.indexOf("response:"));
       }
 
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(500).json({ error: errorMessage });
+      }
       res.render("contact", { error: errorMessage });
     }
   } catch (error) {

@@ -3,15 +3,18 @@
     <h2>Contact Me</h2>
 
     <div class="contact-form" style="margin-top: 50px; margin-bottom: 50px;">
+        <div id="statusMessage"
+            style="display: none; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; text-align: center;"></div>
+
         <% if (typeof success !=='undefined' ) { %>
-            <div
+            <div class="alert-success"
                 style="background-color: rgba(0, 255, 0, 0.2); color: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border: 1px solid var(--accent-teal); text-align: center;">
                 <%= success %>
             </div>
             <% } %>
 
                 <% if (typeof error !=='undefined' ) { %>
-                    <div
+                    <div class="alert-error"
                         style="background-color: rgba(255, 0, 0, 0.2); color: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #ff4444; text-align: center;">
                         <%= error %>
                     </div>
@@ -39,15 +42,56 @@
                             <button type="submit" class="btn-submit" id="submitBtn">Send Message</button>
                         </form>
 
-    <script>
-        document.getElementById('contactForm').addEventListener('submit', function() {
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = 'Sending...';
-            btn.style.opacity = '0.7';
-            btn.style.cursor = 'not-allowed';
-        });
-    </script>
+                        <script>
+                            document.getElementById('contactForm').addEventListener('submit', async function (e) {
+                                e.preventDefault();
+                                const btn = document.getElementById('submitBtn');
+                                const statusDiv = document.getElementById('statusMessage');
+                                const form = e.target;
+
+                                // Initial UI state
+                                btn.disabled = true;
+                                btn.innerText = 'Sending...';
+                                statusDiv.style.display = 'none';
+
+                                // Remove any server-rendered alerts
+                                document.querySelectorAll('.alert-success, .alert-error').forEach(el => el.remove());
+
+                                try {
+                                    const formData = new FormData(form);
+                                    const data = Object.fromEntries(formData.entries());
+
+                                    const response = await fetch('/contact', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/json'
+                                        },
+                                        body: JSON.stringify(data)
+                                    });
+
+                                    const result = await response.json();
+
+                                    if (response.ok) {
+                                        statusDiv.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+                                        statusDiv.style.border = '1px solid var(--accent-teal)';
+                                        statusDiv.innerText = result.success || 'Message sent successfully!';
+                                        statusDiv.style.display = 'block';
+                                        form.reset();
+                                    } else {
+                                        throw new Error(result.error || 'Failed to send message.');
+                                    }
+                                } catch (err) {
+                                    statusDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+                                    statusDiv.style.border = '1px solid #ff4444';
+                                    statusDiv.innerText = err.message;
+                                    statusDiv.style.display = 'block';
+                                } finally {
+                                    btn.disabled = false;
+                                    btn.innerText = 'Send Message';
+                                }
+                            });
+                        </script>
     </div>
 
     <div class="glass-card" style="margin-top: 2rem;">
