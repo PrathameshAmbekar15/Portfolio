@@ -62,13 +62,14 @@ app.post("/contact", async (req, res) => {
       }
       res.render("contact", { success: "Message Sent Successfully!" });
     } catch (error) {
-      console.error("Email Error:", error);
-      let errorMessage = "Error sending email. Please try again later.";
+      console.error("FULL EMAIL ERROR OBJECT:", JSON.stringify(error, null, 2));
+      console.error("EMAIL ERROR MESSAGE:", error.message);
+      console.error("EMAIL ERROR CODE:", error.code);
+
+      let errorMessage = `Error sending email: ${error.message}`;
 
       if (error.code === 'EAUTH') {
         errorMessage = "Authentication failed. Please DOUBLE-CHECK your EMAIL_USER and EMAIL_PASS (App Password) on Render.";
-      } else if (error.message.includes("response:")) {
-        errorMessage = error.message.substring(error.message.indexOf("response:"));
       }
 
       if (req.headers.accept && req.headers.accept.includes('application/json')) {
