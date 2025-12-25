@@ -59,10 +59,15 @@ app.post("/contact", async (req, res) => {
       res.render("contact", { success: "Message Sent Successfully!" });
     } catch (error) {
       console.error("Email Error:", error);
-      // Simplify error message for user
-      const start = error.message.indexOf("response:");
-      const cleanError = start !== -1 ? error.message.substring(start) : "Authentication failed. Check your email and password.";
-      res.render("contact", { error: "Error sending email: " + cleanError });
+      let errorMessage = "Error sending email. Please try again later.";
+      
+      if (error.code === 'EAUTH') {
+        errorMessage = "Authentication failed. Please ensure your EMAIL_USER and EMAIL_PASS (App Password) are correctly configured.";
+      } else if (error.message.includes("response:")) {
+        errorMessage = error.message.substring(error.message.indexOf("response:"));
+      }
+
+      res.render("contact", { error: errorMessage });
     }
   } catch (error) {
     console.error("General Email Error:", error);

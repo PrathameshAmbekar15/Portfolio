@@ -17,7 +17,7 @@
                     </div>
                     <% } %>
 
-                        <form action="/contact" method="POST">
+                        <form id="contactForm" action="/contact" method="POST">
                             <div class="form-group">
                                 <label for="name"
                                     style="color: #fff; margin-bottom: 0.5rem; display: block;">Name</label>
@@ -36,8 +36,18 @@
                                 <textarea id="message" name="message" rows="5" required class="form-control"></textarea>
                             </div>
 
-                            <button type="submit" class="btn-submit">Send Message</button>
+                            <button type="submit" class="btn-submit" id="submitBtn">Send Message</button>
                         </form>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+            btn.style.opacity = '0.7';
+            btn.style.cursor = 'not-allowed';
+        });
+    </script>
     </div>
 
     <div class="glass-card" style="margin-top: 2rem;">
