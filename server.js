@@ -47,7 +47,7 @@ app.post("/contact", async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev', // Default sender for free accounts
+        from: 'Prathamesh Portfolio <onboarding@resend.dev>', // Default sender for free accounts
         to: process.env.EMAIL_USER || 'your-email@example.com', // Your verified email
         reply_to: email,
         subject: `Portfolio Contact from ${name}`,
