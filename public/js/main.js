@@ -146,13 +146,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Active Navigation Link Highlighting
+    // Active Navigation Link Highlighting & Scroll Spy
     const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('nav a');
+    const navLinks = document.querySelectorAll('.nav-links a');
 
-    if (navLinks.length > 0) {
+    if (currentPath === '/' || currentPath === '/home' || currentPath === '') {
+        const sections = document.querySelectorAll('section[id]');
+
+        function scrollSpy() {
+            let currentSectionId = 'home';
+            const scrollPosition = window.scrollY + 200; // Offset for detection
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                link.style.color = '';
+                link.style.fontWeight = '';
+                
+                const href = link.getAttribute('href');
+                if (href === `/#${currentSectionId}`) {
+                    link.classList.add('active');
+                    link.style.color = '#fff';
+                    link.style.fontWeight = 'bold';
+                }
+            });
+        }
+
+        window.addEventListener('scroll', scrollSpy);
+        scrollSpy(); // Initial call
+    } else {
+        // Highlighting for subpages (e.g., /resume page or other subpages if any)
         navLinks.forEach(link => {
-            if (link.getAttribute('href') === currentPath) {
+            const href = link.getAttribute('href');
+            if (href && (href === currentPath || href.startsWith(currentPath + '#'))) {
                 link.classList.add('active');
                 link.style.color = '#fff';
                 link.style.fontWeight = 'bold';

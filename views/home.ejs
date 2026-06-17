@@ -357,7 +357,10 @@
     <section id="contact">
         <h2>Contact Me</h2>
         <div class="contact-form">
-            <form action="/contact" method="POST">
+            <div id="statusMessage"
+                style="display: none; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; text-align: center;"></div>
+
+            <form id="homeContactForm" action="/contact" method="POST">
                 <div class="form-group">
                     <input type="text" name="name" class="form-control" placeholder="Your Name" required>
                 </div>
@@ -368,9 +371,56 @@
                     <textarea name="message" rows="5" class="form-control" placeholder="Your Message"
                         required></textarea>
                 </div>
-                <button type="submit" class="btn-submit">Send Message</button>
+                <button type="submit" class="btn-submit" id="homeSubmitBtn">Send Message</button>
             </form>
         </div>
+
+        <script>
+            document.getElementById('homeContactForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('homeSubmitBtn');
+                const statusDiv = document.getElementById('statusMessage');
+                const form = e.target;
+
+                btn.disabled = true;
+                btn.innerText = 'Sending...';
+                statusDiv.style.display = 'none';
+
+                try {
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData.entries());
+
+                    const response = await fetch('/contact', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        statusDiv.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+                        statusDiv.style.border = '1px solid var(--accent-teal)';
+                        statusDiv.innerText = result.success || 'Message sent successfully!';
+                        statusDiv.style.display = 'block';
+                        form.reset();
+                    } else {
+                        throw new Error(result.error || 'Failed to send message.');
+                    }
+                } catch (err) {
+                    statusDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+                    statusDiv.style.border = '1px solid #ff4444';
+                    statusDiv.innerText = err.message;
+                    statusDiv.style.display = 'block';
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = 'Send Message';
+                }
+            });
+        </script>
     </section>
 
     <%- include("partials/footer") %>
