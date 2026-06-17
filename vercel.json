@@ -12,10 +12,13 @@
       }
     }
   ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "server.js"
-    }
+  "routes": [
+    { "src": "/css/(.*)", "dest": "/public/css/$1" },
+    { "src": "/js/(.*)", "dest": "/public/js/$1" },
+    { "src": "/lib/(.*)", "dest": "/public/lib/$1" },
+    { "src": "/images/(.*)", "dest": "/public/images/$1" },
+    { "src": "/resume.pdf", "dest": "/public/resume.pdf" },
+    { "src": "/favicon.png", "dest": "/public/favicon.png" },
+    { "src": "/(.*)", "dest": "server.js" }
   ]
 }
